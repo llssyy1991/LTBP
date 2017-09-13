@@ -8,43 +8,48 @@ import csv
 import base64
 import os
 
-class NDE004TestInfo(TestNode):
+class NDE007TestInfo(TestNode):
 
-    __rootTag   = "NDE004-TestInfo"
-    __Equipment = "IE"
+    __rootTag   = "NDE007-TestInfo"
+    __Equipment = "USW"
 
     def __init__(self, testinfo, datapathList, comment):
 
+        # USW
+        # append data
         self.rootTag = self.__rootTag
         self.Equip   = self.__Equipment
-        super(NDE004TestInfo, self).__init__(testinfo)
+        super(NDE007TestInfo, self).__init__(testinfo)
 
         for datapath in datapathList:
 
             self.dataIn, _, _ = self.GetData(datapath)
             self.GetLocation(datapath)
+            self.cols = [(3, 4), (6, 5), (11, 12), (14, 13)]
             count     = 0
 
-            for rowNum in (1, 2, 7, 8, 9, 10, 15, 16):
+            for rowNum in (1, 2, 5, 6):
                 data_frame = dict()
-                data_frame["XLocation"] =  str(float(self.x[count]) * 0.00328084)
-                data_frame["YLocation"] =  str(float(self.y[count]) * 0.00328084)
-                data_list               =  ["YLocation", "XLocation"]
-                data_node               =  \
-                    type("NDE004-Readings", (Node,), {"__init__": init})(data_frame, list=data_list).__ToNode__()
-                data_file               =  ""
-                col1                    =  self.dataIn["set_" + str(rowNum)]
+                data_frame["XLocation"] = str(float(self.x[rowNum]) * 0.00328084)
+                data_frame["YLocation"] = str(float(self.y[rowNum]) * 0.00328084)
+                data_list               = ["YLocation", "XLocation"]
+                data_node               = \
+                    type("NDE007-Readings", (Node,), {"__init__": init})(data_frame, list=data_list).__ToNode__()
+                data_file = ""
+                col1                    =  self.dataIn["set_" + str(self.cols[count][0] + 1)]
+                col2                    =  self.dataIn["set_" + str(self.cols[count][1] + 1)]
+
                 count                   += 1
 
                 for i in range(512):
-                    data_file    = data_file + str(col1[i]) + '\n\r'
+                    data_file    = data_file + str(col1[i]) + ' , ' + str(col2[i]) + '\n\r'
 
                 data_fileBase64  = base64.b64encode(data_file)
                 dataRoot         = Element("DataCollectionFile")
                 subDataFile      = SubElement(dataRoot, "File")
                 subDataFile.text = data_fileBase64
                 subFileName      = SubElement(dataRoot, "FileName")
-                subFileName.text = os.path.basename(datapath) + str(count) + "IE"
+                subFileName.text = os.path.basename(datapath) + str(count) + "USW"
                 subFileComment = SubElement(dataRoot, "Comment")
                 subFileComment.text = comment
                 data_node.append(dataRoot)
@@ -66,5 +71,7 @@ class NDE004TestInfo(TestNode):
         file   = open(filename)
         reader = csv.reader(file, delimiter = ',')
         # USW location information
+        next(reader)
+        next(reader)
         self.x = next(reader)
         self.y = next(reader)

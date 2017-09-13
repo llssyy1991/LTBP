@@ -45,15 +45,15 @@ class BridgeInformation(Node):
     def __init__(self, BridgeInfo):
 
         self.data = dict()
-        self.data["ltbpcmn:StructureID"] = BridgeInfo.ID
+        self.data["ltbpcmn:StructureID"]    = BridgeInfo.ID
         self.data["ltbpcmn:LTBPBridgeName"] = BridgeInfo.BridgeName
-        self.data["ltbpcmn:State"] = BridgeInfo.State
-        self.list = ["ltbpcmn:StructureID", "ltbpcmn:LTBPBridgeName", "ltbpcmn:State"]
+        self.data["ltbpcmn:State"]          = BridgeInfo.State
+        self.list                           = ["ltbpcmn:StructureID", "ltbpcmn:LTBPBridgeName", "ltbpcmn:State"]
         # self.data["ltbpcmn:ProtocolName"] = ProtocolName
 
 
 # interface
-class Inspector(Node):
+class Inspectors(Node):
 
     def __init__(self, FirstName, SecondName, Company):
 
@@ -73,7 +73,7 @@ class Personnel(Node):
 
 
 #interface / view
-class EquipmentInfo(Node):
+class EquipmentUsed(Node):
 
     def __init__(self, Name, Model, Manufacturer):
 
@@ -88,13 +88,20 @@ class EquipmentInfo(Node):
 # model
 class TestInfo(object):
 
-    def __init__(self, TestDate, personnel, AirTemperature, DeckSurfaceTemperature, TestSite):
+    def __init__(self, TestDate, personnel, AirTemperature, DeckSurfaceTemperature, BridgeDeckThickness, TestSite):
 
-        self.TestDate = str(TestDate)
-        self.Personnel = personnel
-        self.AirTemperature = str(AirTemperature)
+        # TestDate  : data collection date
+        # personnel : person who collected the data
+        # AirTemperature
+        # DeckSurfaceTemperature
+        # TestSite
+
+        self.TestDate               = str(TestDate)
+        self.Personnel              = personnel
+        self.AirTemperature         = str(AirTemperature)
         self.DeckSurfaceTemperature = str(DeckSurfaceTemperature)
-        self.TestSite = str(TestSite)
+        self.BridgeDeckThickness    = str(BridgeDeckThickness)
+        self.TestSite               = str(TestSite)
 
 # model
 class BridgeInfo(object):
@@ -120,15 +127,15 @@ def init(self, data, list = None):
 #         pass
 
 
-Equipments      = dict()
+Equipments      = dict()       # preset equipment for
 inspectors      = list()
 Bridge          = None
 operationInfo   = None
 
 
-Equipments["ER"] = EquipmentInfo("Wenner Probe"     , "Resipod Resistivity Meter"   , "Proceq")
-Equipments["IE"] = EquipmentInfo("Infratek Cane"    , ""                            , "Infratek Solution")
-
+Equipments["ER"]  = EquipmentUsed("Wenner Probe"     , "Resipod Resistivity Meter"   , "Proceq")
+Equipments["IE"]  = EquipmentUsed("Infratek Cane"    , ""                            , "Infratek Solution")
+Equipments["USW"]  = EquipmentUsed("Infratek Cane"    , ""                            , "Infratek Solution")
 
 if __name__ == "__main__":
 
